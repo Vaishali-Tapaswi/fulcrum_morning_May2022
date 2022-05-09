@@ -3,3 +3,34 @@ Info -
     
     http://www.corej2eepatterns.com/index.htm
 
+Lab 1 - Create a new maven project (Day1.demo1)
+        Browser -> https://start.spring.io/
+            Maven Project, java, 2.6.7
+            Day1.demo1
+            jar , java 8
+            Add Dependencies - web
+                Generate -> project
+                or 
+                explorer 
+        Observe -> pom -> parent, dependency
+        
+        Write/Copy  Application (packaged)
+            @SpringBootApplication(scanBasePackages = "controllers")
+            public class Application {
+
+                public static void main(String[] args) {
+                    SpringApplication.run(Application.class, args);
+                }
+            }
+       Write a class controllers.MyController
+            package controllers;
+
+            @RestController
+            @RequestMapping(value = "/")
+            public class MyController {
+                @GetMapping
+                public String hello(){
+                    return "<h1>Hello World !!!</h1>";
+                }
+            }
+    Run -> http://localhost:8080/
