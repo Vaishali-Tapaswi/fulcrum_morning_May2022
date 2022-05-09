@@ -1,3 +1,71 @@
+Lab 2 -  Create a new maven project (Day1.demo1)
+        Browser -> https://start.spring.io/
+            Maven Project, java, 2.6.7
+            Day1.demo1
+            jar , java 8
+            Add Dependencies  - no dependency
+                Generate -> project
+                or 
+                explorer 
+        Observe -> pom -> parent, dependency
+
+        Create a bean 
+            package demo;
+            @Component
+            public class Simple {
+                public Simple(){
+                    System.out.println("in Simple Constructor");
+                }
+                public void m1(){
+                    System.out.println("m1 invoked ....");
+
+                }
+            }
+    -> Create Application
+            package demo;
+        @SpringBootApplication
+        public class Application {
+
+            public static void main(String[] args) {
+                ApplicationContext context = SpringApplication.run(Application.class, args);
+                System.out.println("----------------After Context loaded ------------------");
+                Simple simple1 = context.getBean("simple", Simple.class);
+                simple1.m1();
+                Simple simple2 = context.getBean("simple", Simple.class);
+                simple2.m1();
+                Simple simple3 = context.getBean("simple", Simple.class);
+                simple3.m1();
+            }
+        }
+        run -> observe -> where is simple instance created and how many instnaces created
+        Modify Simple to include 1 class level annoations
+            @Scope(value = "prototype")
+        run -> observe -> where is simple instance created and how many instnaces created
+        Modify Simple to include 1 class level annoations
+            @Lazy
+        run -> observe -> where is simple instance created and how many instnaces created
+        
+        Write a method  in application class
+                @Bean
+                @Scope(value = "prototype")
+                public First first(){
+                    System.out.println("in first method of Application class");
+                    return new First();
+                }
+        
+        Create First class
+            package demo;
+
+            public class First {
+                public  First(){
+                    System.out.println("in First Constructor...");
+                }
+                public void m1(){
+                    System.out.println("m1 of First");
+                }
+            }
+    try changing scope and @bean annotation
+
 Info -
     https://docs.oracle.com/cd/B14098_01/core.1012/b14000/design.htm
     
