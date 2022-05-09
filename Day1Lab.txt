@@ -1,3 +1,5 @@
 Info -
     https://docs.oracle.com/cd/B14098_01/core.1012/b14000/design.htm
     
+    http://www.corej2eepatterns.com/index.htm
+
