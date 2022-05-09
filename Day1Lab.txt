@@ -1,7 +1,56 @@
-Lab 2 -  Create a new maven project (Day1.demo1)
+Lab 3 - Modify Day1.demo1
+                @RestController
+                @RequestMapping(value = "/")
+                public class FirstController {
+                    @GetMapping
+                    public String method1() {
+                        String str = "GetMapping in method1";
+                        System.out.println(str);
+                        return "<h1>" + str + "</h1>";
+                    }
+        + POST/PUT/DELETE
+        --------Postman testing -> GET/POST/PUT/DELETE + HEAD/OPTIONS
+       
+                @RestController
+                @RequestMapping(value = "/second")
+                public class SecondController {
+                    @GetMapping(value="/s1")
+                    public String method1() {
+                        String str = "GetMapping in method1";
+                        System.out.println(str);
+                        return "<h1>" + str + "</h1>";
+                    }
+        + /second/s1 and /second/s2
+        -> observe error (404) for /second
+        
+        
+        
+                @RestController
+                @RequestMapping(value = "/third")
+                public class ThirdController {
+                    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+                    public String method1() {
+                        String str = "plain text in method1";
+                        System.out.println(str);
+                        return "plain text method1";
+                    }
+
+                    @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
+                    public String method2() {
+                        String str = "html in method2";
+                        System.out.println(str);
+                        return "<h1>HTML Data " + str +"</h1>";
+                    }
+
+                }
+        -> run from browser 
+        -> postman -> Headers -> accept -> text/plain / text/html
+        
+
+Lab 2 -  Create a new maven project (Day1.demo2)
         Browser -> https://start.spring.io/
             Maven Project, java, 2.6.7
-            Day1.demo1
+            Day1.demo2
             jar , java 8
             Add Dependencies  - no dependency
                 Generate -> project
