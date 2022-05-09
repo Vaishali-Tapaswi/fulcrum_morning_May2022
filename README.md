@@ -1,0 +1,1 @@
+# fulcrum_morning_May2022
