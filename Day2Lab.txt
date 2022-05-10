@@ -1,3 +1,14 @@
+Lab 3 - Modify  Day2.demo1.params  
+            https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.core
+        start tomcat server on port 8085
+          Option1 -   create application.properties in resources 
+                server.port=8085
+          Option2 - create application.yml file in resources (delete application.properties)
+            server:
+             port: 9090
+         
+         Modify yml file to enable logging for current application and store log in demo.log file
+
 Lab 2 - Modify  Day2.demo1.params 
       Create new package custom
       Create custom.Emp
