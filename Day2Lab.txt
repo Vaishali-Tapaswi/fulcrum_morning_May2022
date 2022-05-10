@@ -1,3 +1,43 @@
+Lab 2 - Modify  Day2.demo1.params 
+      Create new package custom
+      Create custom.Emp
+            package custom;
+            public class Emp {
+                private int empno;
+                private String ename;
+                private double salary;
+            + get/set + toString
+      Create custom.EmpController
+                  package custom;
+                  @RestController
+                  @RequestMapping(value = "/emp")
+                  public class EmpController {
+                      private List<Emp> list =new ArrayList<>();
+                      @PostMapping()
+                      public ResponseEntity add( Emp e){
+                          System.out.println("EmpController add invoked with " + e);
+                          list.add(e);
+                          return ResponseEntity.status(HttpStatus.CREATED).build();
+                      }
+                      @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+                      public List<Emp> list(){
+                          System.out.println("EmpController List invoked, current size =  "+ list.size());
+                          return list;
+                      }
+                  }
+      
+    Run -> Postman 
+            -> Postman -> x-www-form-urlencoded -> empno, ename,salary data
+            -> get (by default -> JSON data)
+    Modify Code 
+            modify postmapping to include consumes = MediaType.APPLICATION_JSON_VALUE
+            -> postman -> json -> { 	"empno":101, 	"ename":"AAA", 	"salary":11.11 }     
+                  -> status will be 201 but contents will be null
+            -> Modify Emp parameter to include   @RequestBody annotation
+    
+    Write new code for update and delete 
+     
+     
 Lab 1 - Spring Initializer -> Day2.demo1.params , web dependency
       Modify demo.Application.java
             package demo;
