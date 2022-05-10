@@ -32,5 +32,29 @@ Run ->  http://localhost:8080/pv/hello/Vaishali -> Success
     Modify add method, so that
          http://localhost:8080/pv/add/10/40 -> Sum = 50
          
+     Create params.RequestParamDemo.java          
+            package params;
+
+            import org.springframework.web.bind.annotation.*;
+
+
+            @RestController
+            @RequestMapping(value="/rp")
+            public class RequestParamDemo {
+
+                @GetMapping(value="/hello")
+                public String hello( @RequestParam(name = "nm") String name){
+                    System.out.println("RequestParamDemo - hello invoked with " + name);
+                    return "Hello, " + name;
+                }
+                @GetMapping(value="/add")
+                public String add(@RequestParam(name="n1") int no1,@RequestParam(name="n2") int no2){
+                    System.out.println("RequestParamDemo - add invoked with " + no1 + " , " + no2);
+                    return "Sum = " + (no1+no2);
+                }
+            }
+      http://localhost:8080/rp/hello?nm=Vaishali -> Success
+        Postman -> params 
+         http://localhost:8080/rp/add?n1=111&n2=222
          
       
