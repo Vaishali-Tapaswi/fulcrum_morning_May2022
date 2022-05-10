@@ -1,0 +1,36 @@
+Lab 1 - Spring Initializer -> Day2.demo1.params , web dependency
+      Modify demo.Application.java
+            package demo;
+
+            @SpringBootApplication(scanBasePackages = "params")
+            public class Application {
+
+                public static void main(String[] args) {
+                    SpringApplication.run(Application.class, args);
+                }
+            }
+     Create params.PathVariableDemo.java
+          package params;
+
+          @RestController  // = @Controller+  @ResponseBody
+          @RequestMapping(value="/pv")
+          public class PathVariableDemo {
+
+              @GetMapping(value="/hello/{nm}")
+              public String hello( @PathVariable(name = "nm") String name){
+                  System.out.println("PathVariableDemo - hello invoked with " + name);
+                  return "Hello, " + name;
+              }
+              public String add(int no1, int no2){
+                  System.out.println("PathVariableDemo - add invoked with " + no1 + " , " + no2);
+                  return "Sum = " + (no1+no2);
+              }
+          }
+
+Run ->  http://localhost:8080/pv/hello/Vaishali -> Success
+        http://localhost:8080/pv/hello/Vaishali/abc -> 404
+    Modify add method, so that
+         http://localhost:8080/pv/add/10/40 -> Sum = 50
+         
+         
+      
