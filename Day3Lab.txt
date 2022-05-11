@@ -1,0 +1,2 @@
+Lab1 - Read https://cs.au.dk/~amoeller/WWW/webservices/GoogleSearch.wsdl
+        Check how many operations + per operation - input params + return values 
