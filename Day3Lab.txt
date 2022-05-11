@@ -1,3 +1,9 @@
+--------IntelliJ permissions---------------
+File ⇒ Settings ⇒ Build, Execution, Deployment ⇒ Compiler ⇒ Build project automatically.
+Advanced Settings ⇒ Allow auto-make to start even if developed application is currently running.
+--------IntelliJ permissions---------------
+
+
 Lab 5 - 
         Modify yml file to include 
                 management:
