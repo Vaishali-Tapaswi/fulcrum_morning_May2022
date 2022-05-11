@@ -1,2 +1,153 @@
 Lab1 - Read https://cs.au.dk/~amoeller/WWW/webservices/GoogleSearch.wsdl
         Check how many operations + per operation - input params + return values 
+Lab2 - Develop SOAP based Service -> Code First (generate wsdl and schema) (Java)
+        create new project(maven)-> Day3.demo1.SoapCodeFirst
+        Write demo.HelloWorld.java
+                package  demo;
+
+                import javax.jws.WebService;
+                import javax.xml.ws.Endpoint;
+
+                @WebService
+                public class HelloWorld {
+                    public String hello(String name){
+                        System.out.println("Hello invoked with " + name);
+                        return "Hello, " + name;
+                    }
+
+                    public int divide(int no1, int no2){
+                        System.out.println("Divide invoked with " + no1 + ", " + no2);
+                        return no1/no2;
+                    }
+
+                    public static void main(String[] args) {
+                        Endpoint.publish("http://localhost:8888/hello",new HelloWorld());
+                    }
+                }
+        Run -> browser -> http://localhost:8888/hello?wsdl 
+                          http://localhost:8888/hello?xsd=1
+        
+Lab3 -  Develop SOAP based Service -> Contract First (use preexisting schema to write code) -> Spring boot
+        Create hello.xsd (resources)
+                <?xml version="1.0" encoding="UTF-8"?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.9-b130926.1035 svn-revision#5f6196f2b90e9460065a4c2f4e30e065b245e51e. --><xs:schema xmlns:tns="http://demo/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://demo/">
+                    <xs:element name="helloRequest" type="tns:helloRequest"></xs:element>
+                    <xs:element name="helloResponse" type="tns:helloResponse"></xs:element>
+                    <xs:complexType name="helloRequest">
+                        <xs:sequence>
+                            <xs:element name="arg0" type="xs:string" minOccurs="0"></xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                    <xs:complexType name="helloResponse">
+                        <xs:sequence>
+                            <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:schema>
+       Create new maven project ->Spring initializer (https://spring.io/guides/gs/producing-web-service/)
+                        Day3.demo2.SoapContractFirst , add dependencies -> web , Web Services (search soap)
+                        
+       Modify pom file to include 
+                <dependency>
+                        <groupId>wsdl4j</groupId>
+                        <artifactId>wsdl4j</artifactId>
+                </dependency>
+                
+        add plugin
+                  <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jaxb2-maven-plugin</artifactId>
+                        <version>2.5.0</version>
+                        <executions>
+                                <execution>
+                                        <id>xjc</id>
+                                        <goals>
+                                                <goal>xjc</goal>
+                                        </goals>
+                                </execution>
+                        </executions>
+                        <configuration>
+                                <sources>
+                                        <source>${project.basedir}/src/main/resources/hello.xsd</source>
+                                </sources>
+                        </configuration>
+                </plugin>
+       copy demo.Application
+       Run -> maven -> Package -> see HelloRequest.java +.. (Target)
+       
+       create demo.HelloWorldEndPoint.java
+                        package demo;
+
+                        import org.springframework.ws.server.endpoint.annotation.Endpoint;
+                        import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+                        import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+                        import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+                        import javax.xml.bind.JAXBElement;
+                        import javax.xml.namespace.QName;
+
+                        @Endpoint
+                        public class HelloWorldEndPoint {
+                            private static final String NAMESPACE_URI = "http://demo/";
+
+                            private <T> JAXBElement<T> createJaxbElement(T object, Class<T> clazz) {
+                                return new JAXBElement<>(new QName(clazz.getSimpleName()), clazz, object);
+                            }
+
+
+                            @PayloadRoot(namespace = NAMESPACE_URI, localPart = "helloRequest")
+                            public @ResponsePayload()
+                            JAXBElement<HelloResponse> hello(@RequestPayload HelloRequest request) {
+                                System.out.println("Hello" + request);
+                                HelloResponse resp = new HelloResponse();
+                                resp.setReturn("Hello from Spring Boot WebServices, "+ request.getArg0());
+                                return createJaxbElement(resp, HelloResponse.class);
+                                //return resp;
+                            }
+                        }
+
+        Create demo.WebServiceConfig.java
+                package demo;
+
+                import org.springframework.boot.web.servlet.ServletRegistrationBean;
+                import org.springframework.context.ApplicationContext;
+                import org.springframework.context.annotation.Bean;
+                import org.springframework.context.annotation.Configuration;
+                import org.springframework.core.io.ClassPathResource;
+                import org.springframework.ws.config.annotation.EnableWs;
+                import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+                import org.springframework.ws.transport.http.MessageDispatcherServlet;
+                import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
+                import org.springframework.xml.xsd.SimpleXsdSchema;
+                import org.springframework.xml.xsd.XsdSchema;
+
+                @EnableWs
+                @Configuration
+                public class WebServiceConfig extends WsConfigurerAdapter {
+                        @Bean
+                        public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
+                                MessageDispatcherServlet servlet = new MessageDispatcherServlet();
+                                servlet.setApplicationContext(applicationContext);
+                                servlet.setTransformWsdlLocations(true);
+                                return new ServletRegistrationBean<>(servlet, "/ws/*");
+                        }
+
+                        @Bean(name = "hi")
+                        public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema countriesSchema) {
+                                DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+                                wsdl11Definition.setPortTypeName("HelloworldPort");
+                                wsdl11Definition.setLocationUri("/ws");
+                                wsdl11Definition.setTargetNamespace("http://demo/");
+                                wsdl11Definition.setSchema(helloSchema());
+                        //	wsdl11Definition.setRequestSuffix();
+                                return wsdl11Definition;
+                        }
+
+
+                         @Bean public XsdSchema helloSchema() { return new SimpleXsdSchema(new
+                         ClassPathResource("hello.xsd")); }
+
+                }
+                
+        Run -> (copy generated HelloRequest and HelloResponse.java in src/demo ...)
+                http://localhost:8080/ws/hi.wsdl
+                
