@@ -1,3 +1,25 @@
+Lab 4 - Copy Day2.demo1.custom project and rename it to Day3.demo3.actuator
+        Modify pom file to include 
+                 <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-actuator</artifactId>
+                </dependency>
+        Modify application.yml to include
+               management:
+                  endpoints:
+                    enabled-by-default: true
+        Test -> http://localhost:8085/actuator/
+                http://localhost:8085/actuator/health
+        Modify application.yml to include
+                 management:
+                  endpoints:
+                    enabled-by-default: true
+                    web:
+                      base-path: /admin
+            Test -> http://localhost:8085/admin/
+                http://localhost:8085/admin/health
+    
+---------------------------SOAP---------------------------
 Lab1 - Read https://cs.au.dk/~amoeller/WWW/webservices/GoogleSearch.wsdl
         Check how many operations + per operation - input params + return values 
 Lab2 - Develop SOAP based Service -> Code First (generate wsdl and schema) (Java)
