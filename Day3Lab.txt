@@ -1,3 +1,25 @@
+Lab 5 - 
+        Modify yml file to include 
+                management:
+                  endpoints:
+                    enabled-by-default: true
+                    web:
+                      base-path: /admin
+                      exposure:
+                        include: "*"
+        Run -> 14 endpoints 
+        Browser -> http://localhost:8085/admin/ -> 14 options 
+                        1. Heapdump
+                        2. threaddump
+      
+      Automatic Reloading
+        Enable DevTools
+                  <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+        Check first line to see reloading getting enabled.
 Lab 4 - Copy Day2.demo1.custom project and rename it to Day3.demo3.actuator
         Modify pom file to include 
                  <dependency>
