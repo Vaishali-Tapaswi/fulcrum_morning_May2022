@@ -1,0 +1,52 @@
+Lab 1- https://spring.io/guides/gs/accessing-data-jpa/
+    new Project - Day4.demo1.datajpaembedded
+      Dependencies - SPring Data jpa, HSQLDB
+      copy pom file and application file
+    Create demo.Dept
+          @Entity
+          @Table(name = "depttable")
+          public class Dept {
+              @Id
+              private int deptno;
+              private String dname;
+              private String loc;
+        + get/set + toString
+
+   Modify demo.Application.java 
+          package demo;
+
+          @SpringBootApplication
+          public class Application {
+            @Bean
+            public String simple(DeptRepo repo){
+              System.out.println("in Simple ..." + repo);
+              Dept d = new Dept();
+              d.setDeptno(10);
+              d.setDname("HR");
+              d.setLoc("Hyd");
+              repo.save(d);
+              return "Success";
+            }
+            @Bean()
+            @Scope(value="prototype")
+            public String list(DeptRepo repo){
+              System.out.println("in list ..." + repo);
+              for (Dept dept : repo.findAll()) {
+                System.out.println(dept);
+              }
+              return "Success";
+            }
+
+
+            public static void main(String[] args) {
+              ApplicationContext ctx = SpringApplication.run(Application.class, args);
+              ctx.getBean("list");
+
+            }
+
+          }
+      Test
+      Create Application.yml
+           spring:
+            jpa:
+             show-sql: true
