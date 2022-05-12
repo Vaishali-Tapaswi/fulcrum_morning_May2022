@@ -1,3 +1,31 @@
+Lab 5 - Create new project Day4.demo2.JPAJPAexternal
+        Entity - Emp 
+                        String empno
+                        String ename;
+                        double salary -> random number
+                        String project -> proj1,proj2
+                        String department  (dept1,dept2,dept3
+        Repo -   EmpRepo
+                add 20 rows with different data (salary, project, department
+        controllers - EmpController        
+         Modify current project to support external database 
+     
+     Change application.yml
+                spring:
+                  jpa:
+                    show-sql: true
+                    hibernate:
+                      ddl-auto: update
+                  datasource:
+                    url: jdbc:hsqldb:hsql://localhost/
+                    username: SA
+                    password:
+                    driver-class: org.hsqldb.jdbc.JDBCDriver
+        Run -> runserver(start the database)
+            -> runManagerSwing -> client to database -> type - hsql database engine server
+        Test -> 
+        Check the table created
+        
 Lab 2 - Shift Repository code repos package
         Shift Dept to entities package
         Run -> see error
