@@ -1,3 +1,4 @@
+        salary -> between x and y  (https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
 Lab 6 - Queries
         //Option 1 -    declare a method in repo interface -> sql will be generated based on Naming convention of query
             List<Emp> findByProject(String project);
