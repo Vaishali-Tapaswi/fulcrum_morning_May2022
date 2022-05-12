@@ -1,3 +1,51 @@
+Lab 2 - Shift Repository code repos package
+        Shift Dept to entities package
+        Run -> see error
+        Modify Application.java to include two more annoations
+            @EntityScan( basePackages = "entities")
+            @EnableJpaRepositories(basePackages = "repos")
+       Run -> 
+       Delete bean declarations from Application.java
+       Create controllers.DeptController.java
+                package controllers;
+                import entities.Dept;
+                import org.springframework.beans.factory.annotation.Autowired;
+                import org.springframework.stereotype.Component;
+                import repos.DeptRepo;
+
+                @Component(value = "deptcontroller")
+                public class DeptController {
+                    @Autowired
+                    private DeptRepo repo;
+
+                    public void process(){
+                        for (int i = 10;i<=50;i+=10){
+                            Dept d = new Dept();
+                            d.setDeptno(i);
+                            d.setDname("DNAMEof"+i);
+                            d.setLoc("Hyd");
+                            if ((i %20)==0)
+                                d.setLoc("Blr");
+                            repo.save(d);
+                        }
+                        System.out.println("--------Delete Dept 50------------");
+                        repo.deleteById(50);
+                        System.out.println("-------Update Record 10----------- ");
+                        Dept d= new Dept();
+                        d.setDeptno(10);
+                        d.setDname("HR");
+                        d.setLoc("Pnq");
+                        repo.save(d);
+                        System.out.println("--------------- Listing ---------------");
+                        for (Dept dept : repo.findAll()) {
+                            System.out.println(dept);
+                        }
+
+                    }
+                }
+        Modify main method to invoke process from DeptController
+        Run -
+        
 Lab 1- https://spring.io/guides/gs/accessing-data-jpa/
     new Project - Day4.demo1.datajpaembedded
       Dependencies - SPring Data jpa, HSQLDB
