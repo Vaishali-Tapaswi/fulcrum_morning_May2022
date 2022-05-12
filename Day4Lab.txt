@@ -1,3 +1,22 @@
+Lab 6 - Queries
+        //Option 1 -    declare a method in repo interface -> sql will be generated based on Naming convention of query
+            List<Emp> findByProject(String project);
+ 
+        //Option 2 - declare a method in repo interface  with Query annoation
+
+            @Query("select e from Emp e where  e.ename= ?1 and e.project=?2")
+            List<Emp> findBynameanddeparment(String ename, String projname);
+        
+        // Option 3 - 
+                 Emp emp = new Emp();
+                emp.setEname("li");
+                ExampleMatcher customExampleMatcher = ExampleMatcher.matchingAny()
+                        .withMatcher("ename", ExampleMatcher.GenericPropertyMatchers.endsWith().ignoreCase());
+
+                Example<Emp> example = Example.of(emp, customExampleMatcher);
+                repo.findAll(example).forEach(System.out::println);
+        
+
 Lab 5 - Create new project Day4.demo2.JPAJPAexternal
         Entity - Emp 
                         String empno
