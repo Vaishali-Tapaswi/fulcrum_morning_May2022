@@ -1,0 +1,2 @@
+Lab 1 - JMS Basics - P2P, PS
+    https://docs.oracle.com/javaee/6/tutorial/doc/bncdx.html#:~:text=A%20JMS%20provider%20is%20a,that%20produce%20and%20consume%20messages.
