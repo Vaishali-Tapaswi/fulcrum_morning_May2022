@@ -1,2 +1,82 @@
 Lab 1 - JMS Basics - P2P, PS
     https://docs.oracle.com/javaee/6/tutorial/doc/bncdx.html#:~:text=A%20JMS%20provider%20is%20a,that%20produce%20and%20consume%20messages.
+
+Lab2 - Maven Project - Day5.demo1.p2p
+        Maven dependency - ActiveMQ
+        
+       Write Application.java
+                package demo;
+
+                @SpringBootApplication
+                @EnableJms
+                public class Application {
+                    @Bean // Serialize message content to json using TextMessage
+                    public MappingJackson2MessageConverter jacksonJmsMessageConverter() {
+                        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+                        converter.setTargetType(MessageType.TEXT);
+                        converter.setTypeIdPropertyName("_type");
+                        return converter;
+                    }
+
+                    @Bean
+                    public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
+                                                                    DefaultJmsListenerContainerFactoryConfigurer configurer) {
+                        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+                        // This provides all boot's default to this factory, including the message converter
+                        configurer.configure(factory, connectionFactory);
+                        // You could still override some of Boot's default if necessary.
+                        return factory;
+                    }
+
+                    public static void main(String[] args) throws InterruptedException {
+
+                        // Launch the application
+                        ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
+
+                        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+
+                        // Send a message with a POJO - the template reuse the message converter
+                        for(int i =0;i<=50;i++) {
+                            System.out.println("Sending an email message.");
+                            jmsTemplate.convertAndSend("jobsmail", new Email("info@example.com", "Hello " + new Date()));
+                            Thread.sleep(2000);
+                        }
+                    }
+                    }
+
+        Write   demo.Email
+                package demo;
+
+                public class Email {
+
+                  private String to;
+                  private String body;
+
+                  public Email(String to, String body) {
+                    this.to = to;
+                    this.body = body;
+                  }
+
+                    + get/set + toString
+                }
+       Write demo.Receiver
+             package demo;
+
+            import org.springframework.jms.annotation.JmsListener;
+            import org.springframework.stereotype.Component;
+
+            @Component
+            public class Receiver {
+
+              @JmsListener(destination = "jobsmail", containerFactory = "myFactory")
+              public void receiveMessage(Email email) {
+                System.out.println("Received <" + email + ">");
+              }
+            }
+    Run -> check messages send/received
+    
+    ------------------- to connect to external activeMQ
+    spring.activemq.broker-url=tcp://localhost:61616
+    spring.activemq.user=admin
+    spring.activemq.password=admin
+    --------------------
