@@ -80,3 +80,21 @@ Lab2 - Maven Project - Day5.demo1.p2p
     spring.activemq.user=admin
     spring.activemq.password=admin
     --------------------
+
+
+Lab3 - Day5.demo1.p2p to Day5.demo2.ps
+    Modify 
+        factory.setPubSubDomain(true);
+        jmsTemplate.setPubSubDomain(true);
+    Run -> test with just one receiver
+    Create two more receivers -> in sysout statements put R1 / R2 / R3
+         public void receiveMessage(Email email) {
+                 System.out.println("R1 Topic Received <" + email + ">");
+        }
+    Run the code with sending 50 messages
+        Observe messages are shown for all three receivers
+    Change   setPubSubDomain(false); for factory as well as jmstemplate
+        Observe messages are roundrobin
+    
+
+    
