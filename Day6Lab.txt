@@ -88,4 +88,69 @@ Lab 2 -
             Run the same again and observe
                   Messages handled by  both streamWriting1 or streamWriting2
                   (Publish Subscribe  / Multiple  consumers per message)
-      
+
+
+Lab 3 - Same like Lab1 but file instead of stream
+            Day6.demo2.files
+      Modify pom file to include 
+                  <dependency>
+                        <groupId>org.springframework.integration</groupId>
+                        <artifactId>spring-integration-file</artifactId>
+                  <dependency>
+      Modify MyConfig
+            package demo;
+
+
+            import org.springframework.context.annotation.Bean;
+            import org.springframework.context.annotation.Configuration;
+            import org.springframework.integration.annotation.InboundChannelAdapter;
+            import org.springframework.integration.annotation.Poller;
+            import org.springframework.integration.annotation.ServiceActivator;
+            import org.springframework.integration.channel.PublishSubscribeChannel;
+            import org.springframework.integration.channel.QueueChannel;
+            import org.springframework.integration.core.MessageSource;
+            import org.springframework.integration.file.FileReadingMessageSource;
+            import org.springframework.integration.file.FileWritingMessageHandler;
+
+            import org.springframework.integration.file.support.FileExistsMode;
+            import org.springframework.messaging.MessageChannel;
+            import org.springframework.messaging.MessageHandler;
+
+            import java.io.File;
+
+            @Configuration
+            //@EnableIntegration
+            public class MyConfig {
+                final String inputdir = "C:\\tt\\inputdir";
+                final String outputdir1 = "C:\\tt\\ouputdir1";
+                final String outputdir2 = "C:\\tt\\ouputdir2";
+
+                @Bean
+                public MessageChannel filechannel(){
+                //   return new QueueChannel(4);
+                    return new PublishSubscribeChannel();
+                }
+
+                @Bean
+                @InboundChannelAdapter(channel = "filechannel",poller = @Poller(fixedRate = "500"))
+                public MessageSource<File> fileReading() {
+                    FileReadingMessageSource sourceReader = new FileReadingMessageSource();
+                    sourceReader.setDirectory(new File(inputdir));
+                     return sourceReader;
+                }
+                @Bean
+                @ServiceActivator(inputChannel = "filechannel")
+                public MessageHandler filewriting1() {
+                    FileWritingMessageHandler handler = new FileWritingMessageHandler(new File(outputdir1));
+                    handler.setFileExistsMode(FileExistsMode.REPLACE);
+                    handler.setExpectReply(false);
+                    return handler;
+                }
+            }
+
+      Run -> 
+            copy files in inputdir -> observe files created in outputdir1
+            Create two handler for different directories
+                  Check -> 1. QueueChannel
+                           2. PublishSubscribeChannel
+            
