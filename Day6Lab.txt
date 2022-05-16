@@ -75,6 +75,8 @@ Lab1 -
                 check the same , no or minimum message loss (capacity 5)
                 
 Lab 2 -     
+
+            ---> @Bean annoation for channel 
             Create one more MesageHandler as streamWriting2
                   replace System.out with System.err 
             Run the same again and observe
