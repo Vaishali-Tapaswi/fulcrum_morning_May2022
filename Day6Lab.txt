@@ -45,7 +45,7 @@ Lab1 -
               @Configuration
               //@EnableIntegration
               public class MyConfig {
-
+                  @Bean
                   public MessageChannel strchannel(){
                    //   return  new QueueChannel(5);
                       return new DirectChannel();
@@ -74,5 +74,16 @@ Lab1 -
             Modify DirectChannel to QueueChannel (5) 
                 check the same , no or minimum message loss (capacity 5)
                 
-                
-       
+Lab 2 -     
+            Create one more MesageHandler as streamWriting2
+                  replace System.out with System.err 
+            Run the same again and observe
+                  Messages handled by streamWriting1 or streamWriting2 (Point to Point/Pollable / Only one consumer per message)
+            Replace 
+                  return new DirectChannel();
+                  with 
+                        return new PublishSubscribeChannel();
+            Run the same again and observe
+                  Messages handled by  both streamWriting1 or streamWriting2
+                  (Publish Subscribe  / Multiple  consumers per message)
+      
