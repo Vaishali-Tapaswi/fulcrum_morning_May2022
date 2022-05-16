@@ -1,0 +1,78 @@
+Basics - https://www.enterpriseintegrationpatterns.com/
+      -> PS, P2P, Aggregator, Splitter
+Lab1 - 
+      Maven - Day6.demo1.streams, add dependencies - Spring Integration
+      Modify POM file to include  
+                  <dependency>
+                    <groupId>org.springframework.integration</groupId>
+                    <artifactId>spring-integration-stream</artifactId>
+                 </dependency>
+         -> check for file, http, ftp, jms
+        
+     Create demo.StreamApplication.java
+            package demo;
+
+            @SpringBootApplication
+            public class StreamApplication {
+
+              public static void main(String[] args) {
+                  SpringApplication.run(StreamApplication.class, args);
+                }
+            }
+     
+     Create demo.MyConfig.java
+     
+              package demo;
+
+
+              import org.springframework.context.annotation.Bean;
+              import org.springframework.context.annotation.Configuration;
+              import org.springframework.integration.annotation.InboundChannelAdapter;
+              import org.springframework.integration.annotation.Poller;
+              import org.springframework.integration.annotation.ServiceActivator;
+              import org.springframework.integration.channel.DirectChannel;
+              import org.springframework.integration.channel.QueueChannel;
+              import org.springframework.integration.config.EnableIntegration;
+              import org.springframework.integration.core.MessageSource;
+              import org.springframework.integration.stream.CharacterStreamReadingMessageSource;
+              import org.springframework.integration.stream.CharacterStreamWritingMessageHandler;
+              import org.springframework.messaging.MessageChannel;
+              import org.springframework.messaging.MessageHandler;
+
+              import java.io.InputStreamReader;
+              import java.io.OutputStreamWriter;
+
+              @Configuration
+              //@EnableIntegration
+              public class MyConfig {
+
+                  public MessageChannel strchannel(){
+                   //   return  new QueueChannel(5);
+                      return new DirectChannel();
+                  }
+
+                  @Bean
+                  @InboundChannelAdapter(value = "strchannel",poller = @Poller(fixedRate = "500"))
+                  public MessageSource<String> streamReading() {
+                      CharacterStreamReadingMessageSource sourceReader = new CharacterStreamReadingMessageSource(
+                              new InputStreamReader(System.in));
+                      return sourceReader;
+                  }
+                  @Bean
+                  @ServiceActivator(inputChannel = "strchannel")
+                  public MessageHandler streamWriting1() {
+                      System.out.println("in StreamWriting11");
+                      CharacterStreamWritingMessageHandler handler = new CharacterStreamWritingMessageHandler(
+                              new OutputStreamWriter(System.out));
+                      return handler;
+                  }
+              }
+
+      Run -> give multiple inputs -> enter after every input
+              modify @Poller time interval 
+                check some message getting lost
+            Modify DirectChannel to QueueChannel (5) 
+                check the same , no or minimum message loss (capacity 5)
+                
+                
+       
