@@ -3,4 +3,34 @@ Lab 1- Open Day7.day1.filesfilter
           XML or Annotations
       Check -> https://docs.spring.io/spring-integration/docs/current/api/org/springframework/integration/core/MessageSelector.html
           Method which needs to be implemented
-          
+      Write demo.MyFilter.java
+            package demo;
+
+            public class MyFilter implements MessageSelector {
+                @Override
+                public boolean accept(Message message) {
+                    System.out.println("Headers " + message.getHeaders());
+                    System.out.println("Payload " + message.getPayload());
+                    if (message.getPayload() instanceof File){
+                        System.out.println("Instance of File");
+                        if (((File) message.getPayload()).getName().startsWith("msg"))
+                            return false;
+                        else
+                            return true;
+                    }
+                    return false;
+                }
+            }
+
+      Modify MyConfig.java to include
+               @Bean
+                @Filter(inputChannel = "filechannel", outputChannel = "outputch", discardChannel = "disch")
+                public MessageSelector messageSelector(){
+                    return new MyFilter();
+                }
+                
+         1. create 3 channels
+         2. InboundChannelAdapter for filechannel
+         3. ServiceActivator for outputch and disch (with two different directories)
+         
+                
