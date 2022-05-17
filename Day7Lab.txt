@@ -1,3 +1,36 @@
+Lab 2- Copy (Day6.demo1.streams -> Day7.demo2.transform
+
+      Modify MyCOnfig to include 
+                  @Bean
+                @org.springframework.integration.annotation.Transformer(inputChannel = "inputdata", outputChannel = "trasformoutput")
+                public Transformer tranform(){
+                    //return  new MyTransformer();
+                    return  (message)-> {
+                            System.out.println("in tranform " + message);
+                    Message<String> outmessage =
+                            MessageBuilder.createMessage(message.getPayload().toString().toUpperCase(), message.getHeaders());
+                    return outmessage;
+                };
+                }
+
+                @Bean
+                @InboundChannelAdapter(channel = "inputdata",poller = @Poller(fixedRate = "500"))
+                public MessageSource<String> streamReading() {
+                    CharacterStreamReadingMessageSource sourceReader = new CharacterStreamReadingMessageSource(
+                            new InputStreamReader(System.in));
+                    return sourceReader;
+                }
+                @Bean
+                @ServiceActivator(inputChannel = "trasformoutput")
+                public MessageHandler streamWriting1() {
+                    CharacterStreamWritingMessageHandler handler = new CharacterStreamWritingMessageHandler(
+                            new OutputStreamWriter(System.out));
+                    return handler;
+                }
+
+             + channel creaction (DirectChannel)
+    
+--------------------------
 Lab 1- Open Day7.day1.filesfilter
       Check -> https://docs.spring.io/spring-integration/docs/current/reference/html/message-routing.html#filter
           XML or Annotations
