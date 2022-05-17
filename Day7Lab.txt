@@ -33,4 +33,80 @@ Lab 1- Open Day7.day1.filesfilter
          2. InboundChannelAdapter for filechannel
          3. ServiceActivator for outputch and disch (with two different directories)
          
+      Final Modifieid MyConfig should look like
+                  package demo;
+
+
+                  import org.springframework.context.annotation.Bean;
+                  import org.springframework.context.annotation.Configuration;
+                  import org.springframework.integration.annotation.Filter;
+                  import org.springframework.integration.annotation.InboundChannelAdapter;
+                  import org.springframework.integration.annotation.Poller;
+                  import org.springframework.integration.annotation.ServiceActivator;
+                  import org.springframework.integration.channel.DirectChannel;
+                  import org.springframework.integration.channel.PublishSubscribeChannel;
+                  import org.springframework.integration.channel.QueueChannel;
+                  import org.springframework.integration.core.MessageSelector;
+                  import org.springframework.integration.core.MessageSource;
+                  import org.springframework.integration.file.FileReadingMessageSource;
+                  import org.springframework.integration.file.FileWritingMessageHandler;
+
+                  import org.springframework.integration.file.support.FileExistsMode;
+                  import org.springframework.messaging.MessageChannel;
+                  import org.springframework.messaging.MessageHandler;
+
+                  import java.io.File;
+
+                  @Configuration
+                  //@EnableIntegration
+                  public class MyConfig {
+                      final String inputdir = "C:\\tt\\inputdir";
+                      final String outputdir1 = "C:\\tt\\ouputdir1";
+                      final String disdir = "C:\\tt\\problemdir1";
+
+                      @Bean
+                      public MessageChannel filechannel(){
+                          return new DirectChannel();
+                      }
+                      @Bean
+                      public MessageChannel outputch(){
+                          return new DirectChannel();
+                      }
+                      @Bean
+                      public MessageChannel disch(){
+                          return new DirectChannel();
+                      }
+
+                      @Bean
+                      @Filter(inputChannel = "filechannel", outputChannel = "outputch", discardChannel = "disch")
+                      public MessageSelector messageSelector(){
+                          return new MyFilter();
+                      }
+
+                      @Bean
+                      @InboundChannelAdapter(channel = "filechannel",poller = @Poller(fixedRate = "500"))
+                      public MessageSource<File> fileReading() {
+                          FileReadingMessageSource sourceReader = new FileReadingMessageSource();
+                          sourceReader.setDirectory(new File(inputdir));
+                           return sourceReader;
+                      }
+                      @Bean
+                      @ServiceActivator(inputChannel = "outputch")
+                      public MessageHandler filewriting1() {
+                          FileWritingMessageHandler handler = new FileWritingMessageHandler(new File(outputdir1));
+                          handler.setFileExistsMode(FileExistsMode.REPLACE);
+                          handler.setExpectReply(false);
+                          return handler;
+                      }
+                      @Bean
+                      @ServiceActivator(inputChannel = "disch")
+                      public MessageHandler filewriting2() {
+                          FileWritingMessageHandler handler = new FileWritingMessageHandler(new File(disdir));
+                          handler.setFileExistsMode(FileExistsMode.REPLACE);
+                          handler.setExpectReply(false);
+                          return handler;
+                      }
+
+                  }
+
                 
