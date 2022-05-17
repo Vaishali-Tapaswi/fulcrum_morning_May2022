@@ -1,3 +1,119 @@
+Lab 3 - Maven -> Day7.demo3.http -> spring integration dependency
+      POM file to include -> stream, file, http
+      
+      demo.Application.java
+      
+      demo.MyConfig.java
+      
+            package  demo;
+
+            import org.springframework.context.annotation.Bean;
+            import org.springframework.context.annotation.Configuration;
+            import org.springframework.http.HttpMethod;
+            import org.springframework.integration.annotation.InboundChannelAdapter;
+            import org.springframework.integration.annotation.Poller;
+            import org.springframework.integration.annotation.ServiceActivator;
+            import org.springframework.integration.channel.DirectChannel;
+            import org.springframework.integration.core.MessageSource;
+            import org.springframework.integration.http.outbound.HttpRequestExecutingMessageHandler;
+            import org.springframework.integration.stream.CharacterStreamReadingMessageSource;
+            import org.springframework.integration.stream.CharacterStreamWritingMessageHandler;
+            import org.springframework.integration.transformer.Transformer;
+            import org.springframework.messaging.Message;
+            import org.springframework.messaging.MessageChannel;
+            import org.springframework.messaging.MessageHandler;
+            import org.springframework.messaging.support.MessageBuilder;
+
+            import java.io.InputStreamReader;
+            import java.io.OutputStreamWriter;
+            @Configuration
+            public class MyConfig {
+                @Bean
+                public MessageChannel strchannel(){
+                    return new DirectChannel();
+                }
+                @Bean
+                public MessageChannel httpresp(){
+                    return new DirectChannel();
+                }
+                @Bean
+                @InboundChannelAdapter(channel = "strchannel",poller = @Poller(fixedRate = "500"))
+                public MessageSource<String> streamReading() {
+                    CharacterStreamReadingMessageSource sourceReader = new CharacterStreamReadingMessageSource(
+                            new InputStreamReader(System.in));
+                    return sourceReader;
+                }
+                @Bean
+                @ServiceActivator(inputChannel = "strchannel")
+                public MessageHandler gethttpdata() {
+                    HttpRequestExecutingMessageHandler handler = new HttpRequestExecutingMessageHandler("http://localhost:8080/first/");
+                    handler.setHttpMethod(HttpMethod.GET);
+                    handler.setRequiresReply(true);
+                    handler.setExpectedResponseType(String.class);
+                    handler.setOutputChannelName("httpresp");
+                    return handler;
+                   /* CharacterStreamWritingMessageHandler handler = new CharacterStreamWritingMessageHandler(
+                            new OutputStreamWriter(System.out));
+                    return handler;*/
+                }
+                @Bean
+                @ServiceActivator(inputChannel = "trasformoutput")
+                public MessageHandler streamWriting2() {
+                    CharacterStreamWritingMessageHandler handler = new CharacterStreamWritingMessageHandler(
+                            new OutputStreamWriter(System.err));
+                    return handler;
+                }
+                @Bean
+                @org.springframework.integration.annotation.Transformer(inputChannel = "httpresp", outputChannel = "trasformoutput")
+                public Transformer tranform(){
+                    //return  new MyTransformer();
+                    return  (message)-> {
+                        System.out.println("in tranform " + message.getPayload());
+                        Message<String> outmessage =
+                                MessageBuilder.createMessage(message.getPayload().toString(), message.getHeaders());
+                        return outmessage;
+                    };
+                }
+
+            }
+      Run -> Test 
+      Depending on input call different method (s1/ s2)
+      
+-----------------
+http://localhost:8080/first or http://localhost:8080/second/s1 or s2
+One Running REST API Server 
+      @RestController
+      @RequestMapping(value="/first")
+      public class FirstController {
+            //@RequestMapping(method=RequestMethod.GET)
+            @GetMapping()
+            public String m1(){
+                  String str = "Get in m1 - FirstController " + new Date();
+                  System.out.println(str);
+                  return str;
+            }}
+      ------------
+      
+@RestController()
+@RequestMapping(value="/second")
+public class SecondController {
+	
+	@GetMapping(value="/m1")
+	public String m1(){
+		String str = "Get in m1 - SecondController";
+		System.out.println(str);
+		return str;
+	}
+	@GetMapping(value="/m2")
+	public String m2(){
+		String str = "Get in m2 - SecondController";
+		System.out.println(str);
+		return str;
+	}
+	
+}
+
+------------------
 Lab 2- Copy (Day6.demo1.streams -> Day7.demo2.transform
 
       Modify MyCOnfig to include 
