@@ -1,0 +1,6 @@
+Lab 1- Open Day7.day1.filesfilter
+      Check -> https://docs.spring.io/spring-integration/docs/current/reference/html/message-routing.html#filter
+          XML or Annotations
+      Check -> https://docs.spring.io/spring-integration/docs/current/api/org/springframework/integration/core/MessageSelector.html
+          Method which needs to be implemented
+          
