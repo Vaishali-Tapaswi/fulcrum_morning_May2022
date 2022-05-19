@@ -2,3 +2,66 @@ Lab 1 -
   https://docs.spring.io/spring-integration/reference/html/http.html#http-java-config
     http://localhost:8080/simple -> hello from Spring integration
   Maven -> Day9.demo1.httpinbound
+    Add dependencies - SPring integration, Spring Web
+  Write demo.Config.java
+        package demo;
+
+        import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
+        import org.springframework.context.annotation.Bean;
+        import org.springframework.context.annotation.Configuration;
+        import org.springframework.http.HttpMethod;
+        import org.springframework.integration.annotation.ServiceActivator;
+        import org.springframework.integration.channel.QueueChannel;
+        import org.springframework.integration.http.inbound.HttpRequestHandlingMessagingGateway;
+        import org.springframework.integration.http.inbound.RequestMapping;
+        import org.springframework.messaging.Message;
+
+        import java.util.function.Function;
+
+
+        @Configuration
+        public class MyConfig {
+            @Bean
+            public QueueChannel myhttpRequest(){
+                return new QueueChannel(5);
+            }
+            @Bean
+            public QueueChannel myhttpResp(){
+                return new QueueChannel(5);
+            }
+            @Bean
+            public HttpRequestHandlingMessagingGateway inbound() {
+                HttpRequestHandlingMessagingGateway gateway =
+                        new HttpRequestHandlingMessagingGateway(true);
+                gateway.setRequestMapping(mapping());
+            //    gateway.setRequestPayloadType(String.class);
+                gateway.setRequestChannelName("myhttpRequest");
+                gateway.setReplyChannelName("myhttpResp");
+                gateway.setReplyTimeout(12000);
+                return gateway;
+            }
+
+            @Bean
+            public RequestMapping mapping() {
+                RequestMapping requestMapping = new RequestMapping();
+                requestMapping.setPathPatterns("/foo");
+                requestMapping.setMethods(HttpMethod.GET);
+                return requestMapping;
+            }
+
+            @Bean
+            @ServiceActivator( inputChannel = "myhttpRequest",outputChannel = "myhttpResp")
+            public Function<Message<?>, String> handler() {
+                return new Function<Message<?>, String>() {
+                    public String apply(Message<?> message) {
+                        System.out.println("myHandler Payload : " + message.getPayload());
+                        System.out.println("myHandler Header: " + message.getHeaders());
+                        return "Spring Integration as REST API";
+                    }
+
+                };
+            }
+        }
+
+test - http://localhost:8080/foo
+  
