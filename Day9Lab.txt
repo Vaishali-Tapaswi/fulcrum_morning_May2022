@@ -1,0 +1,4 @@
+Lab 1 - 
+  https://docs.spring.io/spring-integration/reference/html/http.html#http-java-config
+    http://localhost:8080/simple -> hello from Spring integration
+  Maven -> Day9.demo1.httpinbound
