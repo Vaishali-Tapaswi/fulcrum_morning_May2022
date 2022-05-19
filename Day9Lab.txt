@@ -1,3 +1,20 @@
+Lab 2 - Maven proj -Day9.demo2.swagger (copy of Day2.demo1.custom)
+    Enable Swagger
+      POM file -> add 
+                <dependency>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-ui</artifactId>
+                    <version>1.6.8</version>
+                </dependency>
+     Create/Modify Application.yml
+      springdoc:
+        swagger-ui:
+         path: /swagger-ui.html
+        api-docs:
+         path: /api-docs
+  Test -> http://localhost:8085/api-docs
+          http://localhost:8085/swagger-ui.html
+ 
 Lab 1 - 
   https://docs.spring.io/spring-integration/reference/html/http.html#http-java-config
     http://localhost:8080/simple -> hello from Spring integration
