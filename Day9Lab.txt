@@ -1,3 +1,13 @@
+Lab 3- http://localhost:8085/api-docs
+    -> download json and save this as app.json on localmachine
+    ->go to  https://editor.swagger.io/
+            File->import file -> choose app.json
+            check file -> save as yml
+            Generate Server -> Spring
+                download zip and extract and open it in Intelli
+                run 
+    =? Check plugin configuration of swagger codegen
+
 Lab 2 - Maven proj -Day9.demo2.swagger (copy of Day2.demo1.custom)
     Enable Swagger
       POM file -> add 
