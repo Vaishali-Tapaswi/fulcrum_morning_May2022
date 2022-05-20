@@ -1,3 +1,5 @@
+Lab 2- https://www.javainuse.com/spring/boot-jwt
+
 Lab1 - Create simple web project with security
   Maven ->   Day10.demo1.security   ( dependency  - Spring Web )
   demo. Application.java
