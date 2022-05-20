@@ -62,3 +62,51 @@ Modify pom file to include
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 Run -> login / password screen 
+
+   Write demo.MyConfig.java
+   
+            package demo;
+
+            import org.springframework.context.annotation.Bean;
+            import org.springframework.context.annotation.Configuration;
+            import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+            import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+            import org.springframework.security.core.userdetails.User;
+            import org.springframework.security.core.userdetails.UserDetails;
+            import org.springframework.security.core.userdetails.UserDetailsService;
+            import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+            @Configuration
+            public class MyConfig extends WebSecurityConfigurerAdapter {
+              @Bean
+              @Override
+              public UserDetailsService userDetailsService() {
+                UserDetails user =
+                   User.withDefaultPasswordEncoder()
+                    .username("user1")
+                       .password("pass1")
+                       .roles("admin")
+                       .build();
+                return new InMemoryUserDetailsManager(user);
+              }
+              @Override
+              protected void configure(HttpSecurity http) throws Exception {
+                http
+                  .authorizeRequests()
+                    .antMatchers("/", "/simple").permitAll()
+                    .anyRequest().authenticated()
+                    .and()
+                    .httpBasic()
+                  //	.formLogin()
+                    .and()
+                  .logout()
+                    .permitAll();
+              }
+            }
+
+  New Browser -> http://localhost:8080/ or /simple -> no auth required
+                 http://localhost:8080/admin/m1 -> cancel - 401
+                  user1,pass1 - valid user 
+                      dev. tools - Network -> headers -> auth. 
+                 postman -> auth -> user, pass -> auth header
+  
+
